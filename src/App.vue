@@ -1,8 +1,8 @@
-<script setup></script>
-
 <template>
-<div>
-  <h1 class="text-3xl text-red font-bold underline">Hello World!</h1>
-</div>
+  <the-navbar></the-navbar>
+  
 </template>
 
+<script setup>
+import TheNavbar from './components/TheNavbar.vue';
+</script>

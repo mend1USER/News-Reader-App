@@ -60,6 +60,7 @@ export const useAuthStore = defineStore('auth', {
         async login() {
             const newToken = 'Test Token'; 
             this.setToken(newToken); 
+            console.log(newToken)
         },
     },
 });

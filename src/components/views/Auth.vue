@@ -94,8 +94,7 @@ const {errors, defineField, handleSubmit, isSubmitting, submitCount} = useForm({
 
 const onSubmit = handleSubmit( async values => {
     await authStore.login(values)
-    console.log(values)
-    router.push('/')
+    router.push('/home')
 
 })
 

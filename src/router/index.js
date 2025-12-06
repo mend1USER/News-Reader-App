@@ -1,48 +1,53 @@
-import Auth from '@/components/views/Auth.vue'
-import Home from '@/components/views/Home.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { createPinia } from 'pinia'
-import TheNavbar from '@/components/TheNavbar.vue'
 
-const pinia = createPinia()
 
 const routes = [{
-  path: '/',
+  path: '/home',
   name: 'Home',
-  component: Home,
+  component: () => import('@/components/views/Home.vue'),
+  meta: {
+    auth: true
+  }
 
 },
 {
-  path: '/auth',
+  path: '/',
   name: 'Auth',
-  component: Auth,
+  component: () => import('@/components/views/Auth.vue'),
+  meta: {
+    auth: false
+  }
  
 },
 {
-path: '/av',
+path: '/nav',
 name: 'TheNavbar',
-component: TheNavbar
+component: () => import('@/components/TheNavbar.vue'),
+meta: {
+  auth: true
+}
 }
 ]
 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: []
+  routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
+  const requireAuth = to.meta.auth
+  const isAuthenticated = authStore.isAuthenticated
+
+if (requireAuth && !isAuthenticated) {
+  next('/?message=auth')
+  } else {
+    next()
+  }
 })
 
 
-// router.beforeEach((to, from, next) =>{
-//   const requierAuth = to.meta.auth
-//   const authStore = useAuthStore(pinia)
-//   const isAuthenticated = authStore.isAuthenticated
-
-//   if(requierAuth && isAuthenticated.isAuthenticated) {
-//     next()
-//   } else {
-//     next()
-//   }
-// })
 
 export default router

@@ -67,7 +67,7 @@
                   <a href="#" :class="[active ? 'bg-gray-100 outline-hidden' : '', 'block px-4 py-2 text-sm text-gray-700']">Settings</a>
                 </MenuItem>
                 <MenuItem v-slot="{ active }">
-                  <a href="#" :class="[active ? 'bg-gray-100 outline-hidden' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign out</a>
+                  <a href="#" @click.prevent="logoutFromAccount" :class="[active ? 'bg-gray-100 outline-hidden' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign out</a>
                 </MenuItem>
               </MenuItems>
             </transition>
@@ -88,7 +88,17 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import {Bars3Icon, BellIcon, XMarkIcon} from '@heroicons/vue/24/outline'
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
+const authStore = useAuthStore()
+
+const logoutFromAccount = () => {
+  authStore.logout()
+  router.push('/')
+
+}
 
 
 </script>

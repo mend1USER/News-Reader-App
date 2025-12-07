@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-
+import axios from 'axios';
+import { ArrowPathIcon } from '@heroicons/vue/24/outline';
 // Функция для получения токена при старте приложения
 function getInitialToken() {
     return localStorage.getItem('jwt-token');
@@ -57,10 +58,15 @@ export const useAuthStore = defineStore('auth', {
         /**
          * 🔐 login (Аналог Vuex Action: login)
          */
-        async login() {
-            const newToken = 'Test Token'; 
-            this.setToken(newToken); 
-            console.log(newToken)
+        async login(credentials) {
+        
+            const apiKey = import.meta.env.VITE_MY_FIREBASE_API_KEY
+            const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`
+            const {data} = await axios.post(url, credentials)
+            const newToken = "Test Token"
+            console.log(data)
+            console.log(newToken, credentials)
+            // this.setToken(newToken); 
         },
     },
 });

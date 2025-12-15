@@ -5,6 +5,9 @@
        
     <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+            <div class="bg-white font-bold">
+            <AppMessage />
+        </div>
             <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Sign in to your account</h2>
         </div>
 
@@ -58,7 +61,12 @@
                 </div>
 
                 <div>
-                    <button type="submit" :disabled="isSubmitting" class="flex  w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2  focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Sign In</button>
+                    <button 
+                    type="submit" 
+                    :disabled="isSubmitting || isTooManyAttempts" 
+                    class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold
+                     text-white hover:bg-indigo-400 focus-visible:outline-2  focus-visible:outline-offset-2
+                      focus-visible:outline-indigo-500 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none">Sign In</button>
                     <span class="text-red-500" v-if="isTooManyAttempts">Вы Слишком Часто Пытаетесь Войти в Систему!</span>
                 </div>
             </form>
@@ -69,8 +77,9 @@
 </template>
 
 <script setup>
+import AppMessage from '@/ui/AppMessage.vue'
 import {computed, watch} from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import {useForm} from 'vee-validate'
 import {toTypedSchema} from '@vee-validate/yup'
 
@@ -78,6 +87,9 @@ import { useAuthStore } from '@/stores/auth'
 import * as yup from 'yup'
 
 const router = useRouter()
+const route = useRoute()
+
+console.log(route.query)
 
 const authStore = useAuthStore()
 
@@ -93,13 +105,22 @@ const {errors, defineField, handleSubmit, isSubmitting, submitCount} = useForm({
 })
 
 const onSubmit = handleSubmit( async values => {
+    try {
     await authStore.login(values)
     router.push('/home')
+    } catch (e) {
+    } 
 
 })
 
 const isTooManyAttempts = computed(() => {
     return submitCount.value >= 3
+})
+
+watch(isTooManyAttempts, val => {
+   if(val) {
+    setTimeout(() => submitCount.value = 0, 3000)
+   }
 })
 
 const [email, emailAttrs] = defineField('email')

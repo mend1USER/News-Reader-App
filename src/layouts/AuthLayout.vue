@@ -1,6 +1,5 @@
 <template>
     <Auth />
-    <div class="bg-red"> HelloeWorld</div>
 </template>
 
 

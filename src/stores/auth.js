@@ -1,87 +1,80 @@
-import { defineStore } from 'pinia';
-import axios from 'axios';
-import {error} from '../utils/error'
-import { useThrowMessage } from './throwMessage';
+import { defineStore } from 'pinia'
+import axios from 'axios'
+import { error } from '../utils/error'
+import { useThrowMessage } from './throwMessage'
 
 // Функция для получения токена при старте приложения
 function getInitialToken() {
-    return localStorage.getItem('jwt-token');
+  return localStorage.getItem('jwt-token')
 }
 
 export const useAuthStore = defineStore('auth', {
-    /**
-     * 💡 State
-     */
-    state: () => ({
-        // ИСПРАВЛЕНО: Теперь токен инициализируется значением из localStorage
-        token: getInitialToken(), 
-    }),
+  /**
+   * 💡 State
+   */
+  state: () => ({
+    // ИСПРАВЛЕНО: Теперь токен инициализируется значением из localStorage
+    token: getInitialToken(),
+  }),
 
+  /**
+   * 💡 Getters
+   */
+  getters: {
+    // Геттер: используем другое имя, чтобы избежать конфликта с state.token
+    tokenValue: (state) => state.token,
+
+    // Проверка авторизации
+    isAuthenticated: (state) => !!state.token,
+  },
+
+  actions: {
     /**
-     * 💡 Getters
+     * 🔄 setToken (Аналог Vuex Mutation: setToken)
      */
-    getters: {
-        // Геттер: используем другое имя, чтобы избежать конфликта с state.token
-        tokenValue: (state) => state.token, 
-        
-        // Проверка авторизации
-        isAuthenticated: (state) => !!state.token,
+    setToken(token) {
+      // 1. Изменение State
+      this.token = token
+
+      // 2. Сохранение в Local Storage
+      localStorage.setItem('jwt-token', token)
     },
 
     /**
-     * 💡 Actions (Объединяет логику Actions и Mutations)
+     * 🚪 logout (Аналог Vuex Mutation: logout)
      */
-    actions: {
-        /**
-         * 🔄 setToken (Аналог Vuex Mutation: setToken)
-         */
-        setToken(token) {
-            // 1. Изменение State
-            this.token = token;
-            
-            // 2. Сохранение в Local Storage
-            localStorage.setItem(
-                'jwt-token',
-                token
-            );
-        }, 
+    logout() {
+      // 1. Изменение State
+      this.token = null
 
-        /**
-         * 🚪 logout (Аналог Vuex Mutation: logout)
-         */
-        logout() {
-            // 1. Изменение State
-            this.token = null; 
-            
-            // 2. Удаление из Local Storage
-            localStorage.removeItem('jwt-token');
-        },
-
-        /**
-         * 🔐 login (Аналог Vuex Action: login)
-         */
-        async login(credentials) {
-            const messageStore = useThrowMessage()
-
-            try {
-                const apiKey = import.meta.env.VITE_MY_FIREBASE_API_KEY
-                const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`
-                const {data} = await axios.post(url, {...credentials, returnSecureToken: true})
-                console.log(data.idToken, credentials)
-                this.setToken(data.idToken)
-
-                messageStore.clearMessage()
-            }
-            catch (e) {
-                console.log(e.response.data.error.message)
-                const errorMessage = error(e.response.data.error.message)
-                messageStore.setMessage({
-                    value: errorMessage,
-                    type: 'danger'
-                })
-                console.log(error(e.response.data.error.message))
-                throw new Error()
-            } 
-        },
+      // 2. Удаление из Local Storage
+      localStorage.removeItem('jwt-token')
     },
-});
+
+    /**
+     * 🔐 login (Аналог Vuex Action: login)
+     */
+    async login(credentials) {
+      const messageStore = useThrowMessage()
+
+      try {
+        const apiKey = import.meta.env.VITE_MY_FIREBASE_API_KEY
+        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`
+        const { data } = await axios.post(url, { ...credentials, returnSecureToken: true })
+        console.log(data.idToken, credentials)
+        this.setToken(data.idToken)
+
+        messageStore.clearMessage()
+      } catch (e) {
+        console.log(e.response.data.error.message)
+        const errorMessage = error(e.response.data.error.message)
+        messageStore.setMessage({
+          value: errorMessage,
+          type: 'danger',
+        })
+        console.log(error(e.response.data.error.message))
+        throw new Error()
+      }
+    },
+  },
+})

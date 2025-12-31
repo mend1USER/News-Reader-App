@@ -41,6 +41,8 @@ router.beforeEach(async (to, from, next) => {
   const requireAuth = to.meta.auth
   const isAuthenticated = authStore.isAuthenticated
 
+  console.log(`Router Guard: Попытка перейти на ${to.path}. Защищен: ${requireAuth}. Auth статус: ${isAuthenticated}`) // <-- ДОБАВИТЬ ЭТО
+
 if (requireAuth && !isAuthenticated) {
   next('/?message=auth')
   } else {

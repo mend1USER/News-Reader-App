@@ -54,18 +54,27 @@ export const useNewsData = defineStore('news', {
 
         // ✅ ИСПРАВЛЕНИЕ: Перебираем state.articles
         for (const article of state.articles) {
-            if (!article.title || !article.source_url) {
+            if (!article.title) {
                 continue
             }
 
             const normalizedTitle = article.title.trim().toLowerCase()
-            const uniqueKey = normalizedTitle + ' | ' + article.source_url
+
+            const contentSnippet = article.content ? article.content.substring(0, 100).trim().toLowerCase() : article.description ? article.description.substring(0, 100).trim().toLowerCase() : ''
+
+
+            const uniqueKey = normalizedTitle + ' | ' + contentSnippet
+
+            if(uniqueKey < 5) {
+              continue
+            }
 
             // Вся логика должна быть внутри цикла:
             if (!seenKey.has(uniqueKey)) {
                 seenKey.add(uniqueKey)
                 uniqueList.push(article)
             }
+            
         }
         
         return uniqueList // <-- Геттер должен что-то возвращать
@@ -75,10 +84,10 @@ export const useNewsData = defineStore('news', {
     // ✅ ИСПРАВЛЕНИЕ: Используем синтаксис обычной функции
     articlesWithImage() {
         // Доступ к уникальным статьям через 'this'
-        const filteredArticles = this.uniqueArticles ?? []
+        // const filteredArticles = this.uniqueArticles ?? []
         
         // Исправлена опечатка: article, а не articles
-        return filteredArticles.filter((article) => article.image_url) 
+        return this.uniqueArticles.filter((article) => article.image_url) 
     },
 },
 
@@ -88,7 +97,7 @@ export const useNewsData = defineStore('news', {
       const baseURL = 'https://newsdata.io/api/1/latest'
       const apiKey = import.meta.env.VITE_NEWS_API
 
-      let url = `${baseURL}?apikey=${apiKey}&language=en&country=gb&image=1&size=9`
+      let url = `${baseURL}?apikey=${apiKey}&language=en&country=ru&image=1&size=9`
 
       if(this.searchModel) {
 

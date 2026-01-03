@@ -67,9 +67,7 @@
           </div>
         </div>
         <div class="flex justify-center align-center">
-          <Combobox max-width="550" class="rounded-xl rounded">
-            <ComboboxInput class="text-white">Search </ComboboxInput>
-          </Combobox>
+         <SearchView />
         </div>
         <div
           class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
@@ -185,6 +183,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
+import SearchView from './views/SearchView.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()

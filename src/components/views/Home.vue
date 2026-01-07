@@ -11,7 +11,6 @@ const {articlesWithImage, articles } = storeToRefs(newsStore)
 const formatPublishDate = (dateString) => {
   if (!dateString) return 'Дата неизвестна'
 
-  // Создаем объект Date из строки (ISO 8601 формат)
   const options = { year: 'numeric', month: 'long', day: 'numeric' }
   return new Date(dateString).toLocaleDateString('ru-RU', options)
 }
@@ -44,11 +43,10 @@ onMounted(() => {
 
   <div class="mt-16 grid gap-6 grid-cols-3 news-list" :style="{ backgroundColor: '#2c3b50' }">
     <a
-      v-for="article in newsStore.articlesWithImage"
+      v-for="article in newsStore.uniqueArticles"
       :key="article.article_id"
-      :href="article.link"
       target="_blank"
-      class="news-card"
+      class="news-card relative flex flex-col pb-10"
     >
       <div class="card-image-container">
         <img :src="article.image_url" :alt="article.title" class="card-image" />
@@ -57,6 +55,28 @@ onMounted(() => {
         <h3 class="card-title text-white">{{ article.title }}</h3>
         <p class="text-white">{{ truncateDescription(article.description, 20) }}</p>
         <p class="card-date">{{ formatPublishDate(article.pubDate) }}</p>
+        <p class="card-date">{{ article.source_name }}</p>
+      </div>
+
+      <div class="flex justify-start mt-4">
+        <router-link
+      :to="`/post/${article.article_id}`"
+      target="_blank"
+      class="
+        absolute 
+        bottom-0 
+        right-0 
+        bg-blue-600 
+        hover:bg-blue-700 
+        text-white 
+        text-sm 
+        p-2 
+        rounded-tl-lg 
+        transition-colors
+      "
+    >
+        Read More &rarr;
+    </router-link>
       </div>
     </a>
 

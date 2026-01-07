@@ -33,11 +33,13 @@
           class="px-3 py-2.5 text-white bg-neutral-secondary-medium border border-default-medium text-heading text-sm focus:ring-brand focus:border-brand block w-full placeholder:text-body"
           placeholder="Search News"
           required
-          v-model.trim="searchQuery"
+          v-model="newsStore.searchModel"
+          @keydown.enter="searchSubmit"
         >
         
         <button
           type="submit"
+          
           class="inline-flex items-center text-white bg-brand hover:bg-brand-strong box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-e-base text-sm px-4 py-2.5 focus:outline-none"
         >
           <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
@@ -48,51 +50,64 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+    import { useNewsData } from '@/stores/newsData';
+  import { markRaw, onMounted, ref } from 'vue';
   import AustraliaIcon from '@/assets/countryIcons/AustraliaIcon.svg'
   import UsaIcon from '@/assets/countryIcons/UsaIcon.svg'
+  import GreatBritain from '@/assets/countryIcons/GreatBritain.svg'
+  import FranceIcon from '@/assets/countryIcons/FranceIcon.svg'
+  import CanadaIcon from '@/assets/countryIcons/CanadaIcon.svg'
   
   // 1. Управление состоянием (State Management)
   const searchQuery = ref('');
   const isDropdownOpen = ref(false);
+  const newsStore = useNewsData()
   
+
+  const searchSubmit = () => {
+    newsStore.getData().then(() => {
+      newsStore.searchModel = null
+    })
+  }
+
+
   const countries = ref([
     {code: 'null', name: 'None'},
-      { code: 'USA', name: 'USA', flagSvg: AustraliaIcon },
-      { code: 'AUS', name: 'Australia', flagSvg: UsaIcon },
-      { code: 'GBR', name: 'United Kingdom' },
-      { code: 'FRA', name: 'France' },
-      { code: 'CAN', name: 'Canada' },
+      { code: 'us', name: 'USA', flagSvg: markRaw(UsaIcon), lang: 'en'},
+      { code: 'au', name: 'Australia', flagSvg:markRaw(AustraliaIcon), lang: 'en' },
+      { code: 'gb', name: 'United Kingdom', flagSvg: markRaw(GreatBritain), lang: 'en' },
+      { code: 'fr', name: 'France', flagSvg: markRaw(FranceIcon), lang: 'fr'},
+      { code: 'ca', name: 'Canada', flagSvg: markRaw(CanadaIcon), lang: 'en'},
   ]);
+
   
-  const selectedCountry = ref(countries.value[0]); // Начальное значение - USA
+  const selectedCountry = ref(countries.value[0]); 
   
-  // 2. Логика (Methods/Functions)
   const selectCountry = (country) => {
       selectedCountry.value = country;
       isDropdownOpen.value = false;
-  };
+
+      newsStore.countrySubmit = country.code
+      newsStore.countryLanguage = country.lang
+      newsStore.getData()
+
+    };
+
+    onMounted(() => {
+      newsStore.getData()
+    })
   
-  // Объявление пользовательского события (custom event), которое будет отправлено родителю
   const emit = defineEmits(['search']);
   
   const handleSearch = () => {
-      // Выполняем действия по поиску (например, отправка HTTP-запроса)
-      // А пока что - просто отправляем событие родительскому компоненту
       emit('search', {
           country: selectedCountry.value.code,
           query: searchQuery.value
-      });
-  
-      // Опционально: очистить поле ввода после поиска
-      // searchQuery.value = ''; 
+      }); 
   };
   
   </script>
   
   <style scoped>
-  /* Здесь можно добавить стили, специфичные для этого компонента, 
-     или использовать Tailwind CSS, если он подключен в вашем проекте. 
-     Так как в вашем HTML-шаблоне используются классы Tailwind, 
-     предполагается, что он подключен. */
+  
   </style>

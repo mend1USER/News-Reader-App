@@ -21,6 +21,14 @@ const routes = [{
  
 },
 {
+  path: '/post/:id',
+  name: 'post',
+  component: () => import('@/components/views/post/_id.vue'),
+  meta: {
+    auth: true
+  }
+},
+{
 path: '/nav',
 name: 'TheNavbar',
 component: () => import('@/components/TheNavbar.vue'),

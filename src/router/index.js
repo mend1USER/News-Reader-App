@@ -24,6 +24,7 @@ const routes = [{
   path: '/post/:id',
   name: 'post',
   component: () => import('@/components/views/post/_id.vue'),
+  props: 'id',
   meta: {
     auth: true
   }

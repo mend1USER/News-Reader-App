@@ -9,10 +9,15 @@ export const useNewsData = defineStore('news', {
     searchModel: null,
     category: null,
     countrySubmit: null,
-    countryLanguage: null
+    countryLanguage: null,
+    currentCategory: null
   }),
+  persist: true,
 
   getters: {
+    getArticleById: (state) => {
+     return (articleId) => state.articles.find(article => article.article_id === articleId)
+    },
     uniqueArticles: (state) => {
         if (!state.articles || state.articles.length === 0) {
             return []
@@ -51,6 +56,7 @@ export const useNewsData = defineStore('news', {
     },
 },
 
+
   actions: {
     async getData() { 
     try {
@@ -69,11 +75,13 @@ export const useNewsData = defineStore('news', {
         if(!this.category) {
           url
         } else {
+          this.currentCategory = this.category
           url += `&category=${this.category}`
         } 
       } else {
         this.articles = null 
         if(!this.category) {
+          this.category = null
           url += `&q=${this.searchModel}`
         } else {
           url += `&category=${this.category}&q=${this.searchModel}`
@@ -90,8 +98,11 @@ export const useNewsData = defineStore('news', {
       console.log('API STATUS:',data.status)
       console.log('API TOTAL RESULTS:', data.totalResults)
       console.log('ARTICLES COUNT:', data.results ? data.results.length : 0)
-
+ this.articles = data.results.filter(article => {
+      return article.title && article.link; 
+    });
       this.articles = data.results
+     
 
       
     } catch (error) {

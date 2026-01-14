@@ -15,55 +15,24 @@
         </div>
         <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
           <div class="hidden sm:ml-6 sm:block">
-            <div class="flex space-x-4">
-              <a
-                :class="[
-                  'text-gray-300 hover:bg-white/5 hover:text-white',
-                  'rounded-md px-3 py-2 text-sm font-medium',
-                ]"
-                @click="changeData(null)"
-              >
-                World
-              </a>
-
-              <a :class="['bg-gray-900 text-white', 'rounded-md px-3 py-2 text-sm font-medium']"
-              @click="changeData('technology')"
-              >
-                Tech
-              </a>
-
-              <a
-                :class="[
-                  'text-gray-300 hover:bg-white/5 hover:text-white',
-                  'rounded-md px-3 py-2 text-sm font-medium',
-                ]"
-                              @click="changeData('sports')"
-
-              >
-                Sport
-              </a>
-
-              <a
-                :class="[
-                  'text-gray-300 hover:bg-white/5 hover:text-white',
-                  'rounded-md px-3 py-2 text-sm font-medium',
-                ]"
-                              @click="changeData('politics')"
-
-              >
-                Politics
-              </a>
-              <a
-                :class="[
-                  'text-gray-300 hover:bg-white/5 hover:text-white',
-                  'rounded-md px-3 py-2 text-sm font-medium',
-                ]"
-                              @click="changeData('science')"
-
-              >
-                Sciense
-              </a>
-            </div>
+            <nav class="flex space-x-4">
+    <a
+      v-for="navItem in navItems"
+      :key="navItem.value"
+      @click="changeData(navItem.value)"
+      :class="[
+        // Общие стили для всех кнопок
+        'cursor-pointer rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200',
+        
+        // Стили для активной кнопки (если значение в сторе совпадает с текущим)
+        newsData.currentCategory === navItem.value
+          ? 'bg-gray-900 text-white' 
+          : 'text-gray-300 hover:bg-white/5 hover:text-white'
+      ]"
+    >
+      {{ navItem.name }}
+    </a>
+  </nav>
           </div>
         </div>
         <div class="flex justify-center align-center">
@@ -169,8 +138,6 @@
   import { useNewsData } from '@/stores/newsData'
 import {
   Disclosure,
-  Combobox,
-  ComboboxInput,
   DisclosureButton,
   DisclosurePanel,
   Menu,
@@ -182,13 +149,21 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
 import SearchView from './views/SearchView.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
 const newsData = useNewsData()
+
+
+const navItems = [
+  { name: 'World', value: null },
+  { name: 'Tech', value: 'technology' },
+  { name: 'Sport', value: 'sports' },
+  { name: 'Politics', value: 'politics' },
+  { name: 'Science', value: 'science' }
+];
 
 const logoutFromAccount = () => {
   authStore.logout()

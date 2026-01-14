@@ -49,8 +49,12 @@ onMounted(() => {
       class="news-card relative flex flex-col pb-10"
     >
       <div class="card-image-container">
-        <img :src="article.image_url" :alt="article.title" class="card-image" />
-      </div>
+<img 
+  v-if="article.image_url" 
+  :src="`https://wsrv.nl/?url=${encodeURIComponent(article.image_url)}&default=https://placehold.co/600x400?text=News`" 
+  class="card-image"
+  alt=""
+>      </div>
       <div class="card-content">
         <h3 class="card-title text-white">{{ article.title }}</h3>
         <p class="text-white">{{ truncateDescription(article.description, 20) }}</p>

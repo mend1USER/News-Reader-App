@@ -52,11 +52,11 @@
   <script setup>
     import { useNewsData } from '@/stores/newsData';
   import { markRaw, onMounted, ref } from 'vue';
-  import AustraliaIcon from '@/assets/countryIcons/AustraliaIcon.svg'
+  import ItalyIcon from '@/assets/countryIcons/ItalyIcon.svg'
   import UsaIcon from '@/assets/countryIcons/UsaIcon.svg'
   import GreatBritain from '@/assets/countryIcons/GreatBritain.svg'
   import FranceIcon from '@/assets/countryIcons/FranceIcon.svg'
-  import CanadaIcon from '@/assets/countryIcons/CanadaIcon.svg'
+  import ChinaIcon from '@/assets/countryIcons/ChinaIcon.svg'
   
   // 1. Управление состоянием (State Management)
   const searchQuery = ref('');
@@ -74,10 +74,10 @@
   const countries = ref([
     {code: 'null', name: 'None'},
       { code: 'us', name: 'USA', flagSvg: markRaw(UsaIcon), lang: 'en'},
-      { code: 'au', name: 'Australia', flagSvg:markRaw(AustraliaIcon), lang: 'en' },
+      { code: 'it', name: 'Italy', flagSvg: markRaw(ItalyIcon), lang: 'it' },
       { code: 'gb', name: 'United Kingdom', flagSvg: markRaw(GreatBritain), lang: 'en' },
       { code: 'fr', name: 'France', flagSvg: markRaw(FranceIcon), lang: 'fr'},
-      { code: 'ca', name: 'Canada', flagSvg: markRaw(CanadaIcon), lang: 'en'},
+      { code: 'cn', name: 'China', flagSvg: markRaw(ChinaIcon), lang: 'zh'},
   ]);
 
   
@@ -111,3 +111,5 @@
   <style scoped>
   
   </style>
+
+  

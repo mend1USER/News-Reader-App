@@ -3,6 +3,7 @@ import { useNewsData } from '@/stores/newsData'
 import TheNavbar from '../TheNavbar.vue'
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
+import Loader from './Loader.vue'
 
 const newsStore = useNewsData()
 
@@ -16,7 +17,7 @@ const formatPublishDate = (dateString) => {
 
 
 
-const truncateDescription = (text, wordLimit = 20) => {
+const shortDescription = (text, wordLimit = 20) => {
   if(!text) {
     return ''
   }
@@ -56,7 +57,7 @@ onMounted(() => {
 >      </div>
       <div class="card-content">
         <h3 class="card-title text-white">{{ article.title }}</h3>
-        <p class="text-white">{{ truncateDescription(article.description, 20) }}</p>
+        <p class="text-white">{{ shortDescription(article.description, 20) }}</p>
         <p class="card-date">{{ formatPublishDate(article.pubDate) }}</p>
         <p class="card-date">{{ article.source_name }}</p>
       </div>
@@ -84,6 +85,7 @@ onMounted(() => {
     </a>
 
     <div>
+      <loader v-if="newsStore.loading" />
           <button class="load-more-btn text-white"  @click="newsStore.getNewNews">Load More News</button>
 
     </div>
@@ -93,11 +95,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* ---------------------------------- */
-/* 1. Контейнер списка (Grid Layout) */
-/* ---------------------------------- */
+
 .news-list {
-  /* Создаем отзывчивую сетку с автоматическим размещением */
   padding: 20px;
 }
 
@@ -107,51 +106,44 @@ onMounted(() => {
   cursor: pointer;
 }
 
-/* ---------------------------------- */
-/* 2. Сама Карточка Новости (Link) */
-/* ---------------------------------- */
+
 .news-card {
-  display: block; /* Ссылка должна быть блочным элементом */
+  display: block; 
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  overflow: hidden; /* Обрезаем, чтобы углы контейнера и изображения совпадали */
+  overflow: hidden; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition:
     transform 0.3s,
     box-shadow 0.3s;
-  text-decoration: none; /* Убираем подчеркивание у ссылки */
-  color: inherit; /* Наследуем цвет текста */
+  text-decoration: none; 
+  color: inherit;
 }
 
 .news-card:hover {
-  transform: translateY(-5px); /* Небольшой подъем при наведении */
+  transform: translateY(-5px); 
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* ---------------------------------- */
-/* 3. Изображение */
-/* ---------------------------------- */
+
 .card-image-container {
-  /* Задаем фиксированное соотношение сторон для изображения */
   width: 100%;
-  height: 200px; /* Фиксированная высота для всех изображений */
+  height: 200px; 
   overflow: hidden;
 }
 
 .card-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Важно: заполняет контейнер без искажений */
+  object-fit: cover; 
   transition: transform 0.3s;
 }
 
 .news-card:hover .card-image {
-  transform: scale(1.05); /* Небольшое увеличение при наведении */
+  transform: scale(1.05); 
 }
 
-/* ---------------------------------- */
-/* 4. Контент (Текст) */
-/* ---------------------------------- */
+
 .card-content {
   padding: 15px;
 }
@@ -161,12 +153,11 @@ onMounted(() => {
   font-weight: bold;
   margin-top: 0;
   margin-bottom: 10px;
-  /* Ограничиваем заголовок двумя строками */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 48px; /* Гарантируем одинаковую высоту заголовка */
+  min-height: 48px;
 }
 
 .card-date {

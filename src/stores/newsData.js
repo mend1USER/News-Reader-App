@@ -11,7 +11,8 @@ export const useNewsData = defineStore('news', {
     countrySubmit: null,
     countryLanguage: null,
     currentCategory: 'top',
-    nextPaginationPage: null
+    nextPaginationPage: null,
+    loading: true
   }),
   persist: true,
 
@@ -60,6 +61,7 @@ export const useNewsData = defineStore('news', {
 
   actions: {
     async getData() { 
+      this.loading = false
     try {
       const baseURL = 'https://newsdata.io/api/1/latest'
       const apiKey = import.meta.env.VITE_NEWS_API
@@ -72,6 +74,7 @@ export const useNewsData = defineStore('news', {
       url += `&country=${defaultCountry}`
       url += `&language=${defaultLanguage}`
 
+      this.loading = true
       if(!this.searchModel) {
         if(!this.category) {
           url
@@ -90,6 +93,7 @@ export const useNewsData = defineStore('news', {
       } if(this.selectedCountry) {
         await axios.get(`${baseURL}?apikey=${apiKey}&language=en&country=${this.countrySubmit}&image=1&size=10`)
       } 
+
     
 
 
@@ -104,6 +108,7 @@ export const useNewsData = defineStore('news', {
       return article.title && article.link; 
     });
       this.articles = data.results
+      this.loading = false
      
      
 
@@ -114,11 +119,13 @@ export const useNewsData = defineStore('news', {
     }
   },
    async getNewNews() {
+    this.loading = false
 
      const baseURL = 'https://newsdata.io/api/1/latest'
       const apiKey = import.meta.env.VITE_NEWS_API
           let url = `${baseURL}?apikey=${apiKey}&image=1&size=6`
 
+          this.loading = true
        if(this.nextPaginationPage) {
         url += `&page=${this.nextPaginationPage}`
        }
@@ -132,6 +139,7 @@ export const useNewsData = defineStore('news', {
             this.nextPaginationPage = data.nextPage
           }
           console.log("NEWS ARRIVEd")
+          this.loading = false
         } catch(e) {
           console.log(e)
         }

@@ -1,7 +1,5 @@
-import instance from '@/utils/axios'
 import axios from '@/utils/axios'
-import { defineStore, storeToRefs } from 'pinia'
-import { getDate } from 'vuetify/lib/components/VCalendar/util/timestamp'
+import { defineStore } from 'pinia'
 
 export const useNewsData = defineStore('news', {
   state: () => ({
@@ -93,24 +91,14 @@ export const useNewsData = defineStore('news', {
       } if(this.selectedCountry) {
         await axios.get(`${baseURL}?apikey=${apiKey}&language=en&country=${this.countrySubmit}&image=1&size=10`)
       } 
-
-    
-
-
-      console.log('FULL API URL:', url)
-
       const {data} = await axios.get(url)
 
-      console.log('API STATUS:',data.status)
-      console.log('API TOTAL RESULTS:', data.totalResults)
-      console.log('ARTICLES COUNT:', data.results ? data.results.length : 0)
+  
  this.articles = data.results.filter(article => {
       return article.title && article.link; 
     });
       this.articles = data.results
       this.loading = false
-     
-     
 
       
     } catch (error) {
@@ -138,7 +126,6 @@ export const useNewsData = defineStore('news', {
             this.articles = [...this.articles, ...data.results]
             this.nextPaginationPage = data.nextPage
           }
-          console.log("NEWS ARRIVEd")
           this.loading = false
         } catch(e) {
           console.log(e)

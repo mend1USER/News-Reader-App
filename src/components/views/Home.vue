@@ -6,7 +6,6 @@ import { storeToRefs } from 'pinia'
 
 const newsStore = useNewsData()
 
-const {articlesWithImage, articles } = storeToRefs(newsStore)
 
 const formatPublishDate = (dateString) => {
   if (!dateString) return 'Дата неизвестна'
@@ -84,7 +83,12 @@ onMounted(() => {
       </div>
     </a>
 
-    <div v-if="newsStore.isLoading">Загрузка новостей...</div>
+    <div>
+          <button class="load-more-btn text-white"  @click="newsStore.getNewNews">Load More News</button>
+
+    </div>
+
+    
   </div>
 </template>
 
@@ -95,6 +99,12 @@ onMounted(() => {
 .news-list {
   /* Создаем отзывчивую сетку с автоматическим размещением */
   padding: 20px;
+}
+
+.load-more-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
 }
 
 /* ---------------------------------- */

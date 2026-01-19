@@ -158,7 +158,7 @@ const newsData = useNewsData()
 
 
 const navItems = [
-  { name: 'World', value: null },
+  { name: 'World', value: 'top' },
   { name: 'Tech', value: 'technology' },
   { name: 'Sport', value: 'sports' },
   { name: 'Politics', value: 'politics' },

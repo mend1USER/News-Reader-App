@@ -95,7 +95,7 @@ export const useNewsData = defineStore('news', {
 
   
  this.articles = data.results.filter(article => {
-      return article.title && article.link; 
+      return article.image_url && article.link; 
     });
       this.articles = data.results
       this.loading = false
